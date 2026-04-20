@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Schedule; // <-- PENTING: Impor model Schedule
+use App\Models\Schedule;
 use Illuminate\Http\Request;
 
 class ScheduleController extends Controller
@@ -24,7 +24,6 @@ class ScheduleController extends Controller
      */
     public function create()
     {
-        // Untuk form jadwal, kita tidak butuh data tambahan, jadi langsung tampilkan view
         return view('admin.schedules.create');
     }
 
@@ -52,7 +51,6 @@ class ScheduleController extends Controller
      */
     public function edit(Schedule $schedule)
     {
-        // Kirim data jadwal yang spesifik ke view edit
         return view('admin.schedules.edit', compact('schedule'));
     }
 

@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Transaction;
-use App\Models\Category; // <-- PENTING: Impor model Category
+use App\Models\Category;
 use Illuminate\Http\Request;
 
 class TransactionController extends Controller

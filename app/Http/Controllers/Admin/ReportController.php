@@ -16,7 +16,6 @@ class ReportController extends Controller
      */
     public function index()
     {
-        // Ambil semua data yang dibutuhkan untuk mengisi dropdown di form
         $cashbooks = Cashbook::all();
         $categories = Category::all();
 
@@ -40,7 +39,6 @@ class ReportController extends Controller
         $transactions = null;
         $period = '';
 
-        // Logika berdasarkan Jenis Laporan yang dipilih
         if ($reportType === 'monthly') {
             $request->validate([
                 'month' => 'required|integer|min:1|max:12',
@@ -83,19 +81,16 @@ class ReportController extends Controller
             $transactions = $query->orderBy('date', 'asc')->get();
         }
 
-        // Hitung Saldo Awal pada periode yang dipilih
         $initialBalance = $cashbook->starting_balance +
             Transaction::where('cashbook_id', $cashbookId)
                 ->where('date', '<', $startDate)
-                ->sum('amount'); // Asumsi pemasukan positif, pengeluaran negatif (perlu disesuaikan jika tidak)
+                ->sum('amount');
 
-        // Jika model Anda memisahkan pemasukan/pengeluaran, gunakan ini:
         $incomeBefore = Transaction::where('cashbook_id', $cashbookId)->where('type', 'pemasukan')->where('date', '<', $startDate)->sum('amount');
         $expenseBefore = Transaction::where('cashbook_id', $cashbookId)->where('type', 'pengeluaran')->where('date', '<', $startDate)->sum('amount');
         $initialBalance = $cashbook->starting_balance + $incomeBefore - $expenseBefore;
 
 
-        // Hitung total untuk periode yang dipilih
         $totalIncome = $transactions->where('type', 'pemasukan')->sum('amount');
         $totalExpense = $transactions->where('type', 'pengeluaran')->sum('amount');
         $endingBalance = $initialBalance + $totalIncome - $totalExpense;

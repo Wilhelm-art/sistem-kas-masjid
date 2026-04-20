@@ -12,14 +12,14 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        Carbon::setLocale('id'); // Mengatur bahasa untuk nama bulan
+        Carbon::setLocale('id');
 
         $now = Carbon::now();
         $startOfMonth = $now->copy()->startOfMonth();
         $endOfMonth = $now->copy()->endOfMonth();
         $sixMonthsAgo = $now->copy()->subMonths(5)->startOfMonth();
 
-        // 1. Data untuk Kartu Statistik (Optimized dengan agregasi tunggal jika memungkinkan, tapi terpisah untuk kejelasan, kita gabung jadi query yang lebih efisien)
+        // Hitung total pemasukan dan pengeluaran bulan ini
         $statistics = Transaction::selectRaw('
             SUM(CASE WHEN type = "pemasukan" THEN amount ELSE 0 END) as total_income,
             SUM(CASE WHEN type = "pengeluaran" THEN amount ELSE 0 END) as total_expense,
@@ -32,7 +32,7 @@ class DashboardController extends Controller
         $currentMonthIncome = $statistics->current_month_income ?? 0;
         $currentMonthExpense = $statistics->current_month_expense ?? 0;
 
-        // 2. Data untuk Grafik (6 bulan terakhir)
+        // Chart data periodik 6 bulan terakhir
         $monthlyTransactions = Transaction::where('date', '>=', $sixMonthsAgo)
             ->selectRaw('YEAR(date) as year, MONTH(date) as month, type, SUM(amount) as total')
             ->groupBy('year', 'month', 'type')
