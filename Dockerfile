@@ -21,9 +21,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-RUN a2dismod mpm_event mpm_worker || true \
-    && a2enmod rewrite \
-    && a2enmod mpm_prefork || true
+RUN rm -f /etc/apache2/mods-enabled/mpm_*.load \
+    && rm -f /etc/apache2/mods-enabled/mpm_*.conf \
+    && a2enmod mpm_prefork \
+    && a2enmod rewrite
 
 ENV APACHE_DOCUMENT_ROOT /var/www/html/public
 ENV PORT=80
