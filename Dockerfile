@@ -39,9 +39,7 @@ RUN composer install --no-dev --optimize-autoloader --no-interaction --no-progre
 
 RUN npm install && npm run build
 
-RUN php artisan passport:keys
-
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache \
     && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
-CMD ["apache2-foreground"]
+CMD php artisan passport:keys && apache2-foreground
